@@ -271,25 +271,6 @@ aliases['lhe_mW2'] = {
 
 
 
-aliases['dnn_0'] = {                                                                                                                                                                          
-    'linesToAdd': ['.L /afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/src/PlotsConfigurations/Configurations/WW/Full2016_v7/WWj_Full2016_v7/evaluate_multiclass_WW_0.cc+'],      
-    'class': 'evaluate_multiclass_0',                                                                                                                                                                  
-    'args': 0,                                                                                                                                                                                             
-} 
-
-aliases['dnn_1'] = {
-    'linesToAdd': ['.L /afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/src/PlotsConfigurations/Configurations/WW/Full2016_v7/WWj_Full2016_v7/evaluate_multiclass_WW_1.cc+'],
-    'class': 'evaluate_multiclass_1',
-    'args': 0,
-}
-
-aliases['dnn_2'] = {
-    'linesToAdd': ['.L /afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/src/PlotsConfigurations/Configurations/WW/Full2016_v7/WWj_Full2016_v7/evaluate_multiclass_WW_2.cc+'],
-    'class': 'evaluate_multiclass_2',
-    'args': 0,
-}
-
-
 
 aliases['ttbar_ME']={
     'linesToAdd': [
@@ -299,7 +280,7 @@ aliases['ttbar_ME']={
         'gSystem->Load("/afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/lib/libLHAPDF.so", "", kTRUE);',
         '.L /afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/src/PlotsConfigurations/Configurations/patches/RecoME_MoMEMta_WWj.cc+'],
     'class': 'RecoME_WWj',
-    'args': 'top_2'
+    'args': 'top'
 }
 
 
@@ -311,7 +292,7 @@ aliases['WWj_ME']={
         'gSystem->Load("/afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/lib/libLHAPDF.so", "", kTRUE);',
         '.L /afs/cern.ch/work/s/sblancof/public/CMSSW_10_6_10/src/PlotsConfigurations/Configurations/patches/RecoME_MoMEMta_WWj.cc+'],
     'class': 'RecoME_WWj',
-    'args': 'WW_2'
+    'args': 'WW'
 }
 
 
