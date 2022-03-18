@@ -73,7 +73,7 @@ private:
   
 };
 
-doPolarizationWeight::doPolarizationWeight():
+doPolarizationWeight::doPolarizationWeight(char const* name):
   TTreeFunction()
 {
   name_ = name;
@@ -104,7 +104,7 @@ doPolarizationWeight::evaluate(unsigned)
   
   Int_t mother_pos = 0;
   
-  Double_t nGen = GenPart_pt->size();
+  Double_t nGen = GenPart_pt->GetSize();
   
   for (unsigned int p = 0; p < nGen; p++){
   
@@ -227,16 +227,18 @@ doPolarizationWeight::evaluate(unsigned)
 	
   if (name_=="LL"){
   	return weights[0];
-  }elif (name_=="TL"){
+  }else if (name_=="TL"){
   	return weights[1];
-  }elif (name_=="LT"){
+  }else if (name_=="LT"){
   	return weights[2];
-  }elif (name_=="TT"){
+  }else if (name_=="TT"){
   	return weights[3];
-  }elif (name_=="cos_wp"){
+  }else if (name_=="cos_wp"){
   	return weights[4];
-  }elif (name_=="cos_wm"){
+  }else if (name_=="cos_wm"){
   	return weights[5];
+  }else{
+  	return -999;
   }
 	
   return weights;
