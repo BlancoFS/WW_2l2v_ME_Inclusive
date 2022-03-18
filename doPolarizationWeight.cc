@@ -44,7 +44,7 @@
 class doPolarizationWeight : public multidraw::TTreeFunction {
 public:
   //Class Constructor 
-  doPolarizationWeight();
+  doPolarizationWeight(char const* name);
   //Class Destructor 
   ~doPolarizationWeight() {
   }
@@ -57,7 +57,8 @@ public:
 
 protected:
   void bindTree_(multidraw::FunctionLibrary&) override;
-
+  std::string name_;
+	
   FloatArrayReader* GenPart_pt{};
   FloatArrayReader* GenPart_eta{};
   FloatArrayReader* GenPart_phi{};
@@ -75,15 +76,15 @@ private:
 doPolarizationWeight::doPolarizationWeight():
   TTreeFunction()
 {
-
+  name_ = name;
 }
 
 double
 doPolarizationWeight::evaluate(unsigned)
 {
    
-  ROOT::Math::PtEtaPhiEVector Wp;
-  ROOT::Math::PtEtaPhiEVector Wm;
+  ROOT::Math::PtEtaPhiEVector genWp;
+  ROOT::Math::PtEtaPhiEVector genWm;
   ROOT::Math::PtEtaPhiEVector genlp;
   ROOT::Math::PtEtaPhiEVector genlm;
   ROOT::Math::PtEtaPhiEVector gennup;
@@ -92,6 +93,8 @@ doPolarizationWeight::evaluate(unsigned)
   TLorentzVector vector_lm; 
   TLorentzVector vector_nup;
   TLorentzVector vector_num;
+  TLorentzVector vector_Wp; 
+  TLorentzVector vector_Wm;
     
   Int_t number_elec = 0;
   Int_t number_muon = 0;
@@ -101,7 +104,7 @@ doPolarizationWeight::evaluate(unsigned)
   
   Int_t mother_pos = 0;
   
-  Double nGen{*GenPart_pt->size()};
+  Double_t nGen = GenPart_pt->size();
   
   for (unsigned int p = 0; p < nGen; p++){
   
@@ -220,7 +223,22 @@ doPolarizationWeight::evaluate(unsigned)
   Double_t weight_LT = (weight_f0_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm);
   Double_t weight_TT = (weight_fT_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm);
   
-  weights = {weight_LL, weight_TL, weight_LT, weight_TT};
+  weights = {weight_LL, weight_TL, weight_LT, weight_TT, cos_Wp_theta_star, cos_Wm_theta_star};
+	
+  if (name_=="LL"){
+  	return weights[0];
+  }elif (name_=="TL"){
+  	return weights[1];
+  }elif (name_=="LT"){
+  	return weights[2];
+  }elif (name_=="TT"){
+  	return weights[3];
+  }elif (name_=="cos_wp"){
+  	return weights[4];
+  }elif (name_=="cos_wm"){
+  	return weights[5];
+  }
+	
   return weights;
 	  
 }	  
