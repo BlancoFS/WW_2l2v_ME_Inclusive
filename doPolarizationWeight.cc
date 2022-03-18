@@ -106,38 +106,38 @@ doPolarizationWeight::evaluate(unsigned)
   for (unsigned int p = 0; p < nGen; p++){
   
     mother_pos = GenPart_genPartIdxMother->At(p);
-    if (GenPart_pdgId->At(p)==11 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==-24){
+    if (GenPart_pdgId->At(p)==11 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==-24){
       pos_wm = mother_pos;
       number_elec++;
       vector_lm.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       genlm.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_lm.E());
-    }else if (GenPart_pdgId->At(p)==-11 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==24){
+    }else if (GenPart_pdgId->At(p)==-11 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==24){
       pos_wp = mother_pos;
       number_elec++;
       vector_lp.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       genlp.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_lp.E());    
-    }else if (GenPart_pdgId->At(p)==13 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==-24){
+    }else if (GenPart_pdgId->At(p)==13 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==-24){
       pos_wm = mother_pos;
       number_muon++;
       vector_lm.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       genlm.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_lm.E());
-    }if (GenPart_pdgId->At(p)==-13 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==24){
+    }if (GenPart_pdgId->At(p)==-13 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==24){
       pos_wp = mother_pos;
       number_muon++;
       vector_lp.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       genlp.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_lp.E());    
     }
     
-    if (GenPart_pdgId->At(p)==-12 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==-24){
+    if (GenPart_pdgId->At(p)==-12 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==-24){
       vector_num.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       gennum.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_num.E());
-    }else if (GenPart_pdgId->At(p)==12 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==24){
+    }else if (GenPart_pdgId->At(p)==12 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==24){
       vector_nup.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       gennup.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_nup.E());    
-    }else if (GenPart_pdgId->At(p)==-14 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==-24){
+    }else if (GenPart_pdgId->At(p)==-14 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==-24){
       vector_num.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       gennum.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_num.E());
-    }if (GenPart_pdgId->At(p)==14 && GenPart_status->At(p)==1 and GenPart_pdgId->At(mother_pos)==24){
+    }if (GenPart_pdgId->At(p)==14 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==24){
       vector_nup.SetPtEtaPhiM(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), 0.0);
       gennup.SetCoordinates(GenPart_pt->At(p), GenPart_eta->At(p), GenPart_phi->At(p), vector_nup.E());    
     }
