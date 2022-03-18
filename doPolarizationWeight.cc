@@ -143,70 +143,88 @@ doPolarizationWeight::evaluate(unsigned)
     }
   
   } // End loop over particles
+	
+  // Assign the four-vector of the Ws
+  vector_Wp.SetPtEtaPhiM(GenPart_pt->At(pos_wp), GenPart_eta->At(pos_wp), GenPart_phi->At(pos_wp), GenPart_mass->At(pos_wp)); // W plus
+  genWp.SetCoordinates(GenPart_pt->At(pos_wp), GenPart_eta->At(pos_wp), GenPart_phi->At(pos_wp), vector_Wp.E());
+      
+  vector_Wm.SetPtEtaPhiM(GenPart_pt->At(pos_wm), GenPart_eta->At(pos_wm), GenPart_phi->At(pos_wm), GenPart_mass->At(pos_wm)); // W minus
+  genWm.SetCoordinates(GenPart_pt->At(pos_wm), GenPart_eta->At(pos_wm), GenPart_phi->At(pos_wm), vector_Wm.E());
   
-  
-  //Initializing 4-vectors
-  TLorentzVector L1(0.,0.,0.,0.);
-  TLorentzVector L2(0.,0.,0.,0.);
-  TLorentzVector LL(0.,0.,0.,0.);
-  TLorentzVector NuNu(0.,0.,0.,0.);
-  TLorentzVector Nu1(0.,0.,0.,0.);
-  TLorentzVector Nu2(0.,0.,0.,0.);
-  TLorentzVector W1(0.,0.,0.,0.);
-  TLorentzVector W2(0.,0.,0.,0.);
-  TLorentzVector Higgs(0.,0.,0.,0.);
-  TLorentzVector J1(0.,0.,0.,0.);
-  TLorentzVector J2(0.,0.,0.,0.);
-
-  //Getting some values to select the events
-  unsigned ncleanjet{*nCleanJet->Get()};
-  unsigned nlep{*nLepton->Get()};
-  float Pmet_pt{*PuppiMET_pt->Get()};
-  float Pmet_phi{*PuppiMET_phi->Get()};
-
-  //Conditions to select the event
-  if(ncleanjet>=2 && nlep>1){
-	 
-    //STEP-1
-    //4-vectors of the leptons
-    //Select one electron and one muon
-    int muons = 0;
-    int electrons = 0;
-    int lep1 = 0;
-    int lep2 = 0;
-	  
-    // Loop over muons and electrons
-    for (unsigned int ilep = 0; ilep<nlep; ilep++){
-     if (abs(Lepton_pdgId->At(ilep)) == 13){
-    	++muons;
-    	if (muons == 1 && Lepton_pt->At(ilep) > 13){
-    	  L1.SetPtEtaPhiM(Lepton_pt->At(ilep), Lepton_eta->At(ilep), Lepton_phi->At(ilep), 0.0); //Muon
-        lep1 = Lepton_pdgId->At(ilep);
-    	}
-      }
-      if (abs(Lepton_pdgId->At(ilep)) == 11){
-    	++electrons;
-    	if (electrons == 1 && Lepton_pt->At(ilep) > 13){
-    	  L2.SetPtEtaPhiM(Lepton_pt->At(ilep), Lepton_eta->At(ilep), Lepton_phi->At(ilep), 0.0); //Electron
-        lep2 = Lepton_pdgId->At(ilep);
-    	}
-     }
-    }
-
-    if (muons<1 || electrons<1){
- 
-
-    	std::vector<std::pair<double, double>> weights = weight.computeWeights({higgs, jet1, jet2});
-
-    
-    	return (double)weights.back().first;
-    
-    }
-    
+  std::vector<Double_t> weights;	
+	
+  if (number_elec!=1 || number_muon!=1 || pos_wp==999 || pos_wm==999){
+	  weights = {-999, -999, -999, -999};
+	  return  weights;
   }
-  //End if(nCleanJet>=2 && nLepton>1)
-  else return -9999; 
-}
+
+  // Boost over lepton from the Ws reference frame
+  // Compute theta star  
+
+  ROOT::Math::XYZVector wpRF;
+  ROOT::Math::XYZVector wmRF;
+	  
+  wmRF = genWm.BoostToCM();
+  wpRF = genWp.BoostToCM();
+  
+  ROOT::Math::XYZVector leppWRF;
+  ROOT::Math::XYZVector lepmWRF;	
+	
+  leppWRF = ROOT::Math::VectorUtil::boost(genlp, wpRF);
+  lepmWRF = ROOT::Math::VectorUtil::boost(genlm, wmRF);
+  
+  Double_t theta_Wp_star = ROOT::Math::VectorUtil::Angle(leppWRF, genWp);
+  Double_t theta_Wm_star = ROOT::Math::VectorUtil::Angle(lepmWRF, genWm);
+
+  Double_t cos_Wp_theta_star = ROOT::Math::cos(theta_Wp_star);
+  Double_t cos_Wm_theta_star = ROOT::Math::cos(theta_Wm_star);	
+
+  	
+  /////////////////////////////////////
+  // Theoretical polarized fractions //
+  /////////////////////////////////////
+  
+  // https://arxiv.org/pdf/2006.14867.pdf
+  // https://arxiv.org/pdf/1204.6427.pdf
+  
+  Double_t f0_m = 0.26;
+  Double_t fL_m = 0.48;
+  Double_t fR_m = 0.25;
+  Double_t fT_m = fL_m + fR_m;
+  
+  Double_t f0_p = 0.271;
+  Double_t fT_p = 0.729;
+  Double_t fL_p = fT_p/1.52;
+  Double_t fR_p = fT_p - fL_p;	
+	
+  // W minus
+  
+  Double_t weight_f0_Wm = (3.0/4.0) * f0_m * (1 - cos_Wm_theta_star*cos_Wm_theta_star);
+  Double_t weight_fL_Wm = (3.0/8.0) * fL_m * (1 + cos_Wm_theta_star)*(1 + cos_Wm_theta_star);
+  Double_t weight_fR_Wm = (3.0/8.0) * fR_m * (1 - cos_Wm_theta_star)*(1 - cos_Wm_theta_star);
+  Double_t weight_fT_Wm = (3.0/8.0) * fL_m * (1 + cos_Wm_theta_star)*(1 + cos_Wm_theta_star) + (3.0/8.0) * fR_m * (1 - cos_Wm_theta_star)*(1 - cos_Wm_theta_star);
+  Double_t weight_total_Wm = weight_f0_Wm + weight_fL_Wm + weight_fR_Wm;
+
+  // W plus
+  
+  Double_t weight_f0_Wp = (3.0/4.0) * f0_p * (1 - cos_Wp_theta_star*cos_Wp_theta_star);
+  Double_t weight_fL_Wp = (3.0/8.0) * fL_p * (1 - cos_Wp_theta_star)*(1 - cos_Wp_theta_star);
+  Double_t weight_fR_Wp = (3.0/8.0) * fR_p * (1 + cos_Wp_theta_star)*(1 + cos_Wp_theta_star);
+  Double_t weight_fT_Wp = (3.0/8.0) * fL_p * (1 - cos_Wp_theta_star)*(1 - cos_Wp_theta_star) + (3.0/8.0) * fR_p * (1 + cos_Wp_theta_star)*(1 + cos_Wp_theta_star);
+  Double_t weight_total_Wp = weight_f0_Wp + weight_fL_Wp + weight_fR_Wp;
+
+  // Doubly Polarized
+  
+  Double_t weight_LL = (weight_f0_Wp/weight_total_Wp)*(weight_f0_Wm/weight_total_Wm);
+  Double_t weight_TL = (weight_fT_Wp/weight_total_Wp)*(weight_f0_Wm/weight_total_Wm);
+  Double_t weight_LT = (weight_f0_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm);
+  Double_t weight_TT = (weight_fT_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm);
+  
+  weights = {weight_LL, weight_TL, weight_LT, weight_TT};
+  return weights;
+	  
+}	  
+	  
 void
 doPolarizationWeight::bindTree_(multidraw::FunctionLibrary& _library)
 {
