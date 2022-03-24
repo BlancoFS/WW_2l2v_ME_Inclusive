@@ -69,7 +69,7 @@ class WW_MEreweighter(Module):
           
         else:
           
-          D_Top = ROOT.recoMoMEMta_WW(Leptons[0].pt, Leptons[1].pt, Leptons[0].phi, Leptons[1].phi, Leptons[0].eta, Leptons[1].eta, event.MET_pt, CleanJets[0].pt, CleanJets[1].pt, CleanJets[0].phi, CleanJets[1].phi, CleanJets[0].eta, CleanJets[1].eta)
+          D_Top = ROOT.recoMoMEMta_WW(Leptons[0].pt, Leptons[1].pt, Leptons[0].phi, Leptons[1].phi, Leptons[0].eta, Leptons[1].eta, event.MET_pt, CleanJets[0].pt, CleanJets[1].pt, CleanJets[0].phi, CleanJets[1].phi, CleanJets[0].eta, CleanJets[1].eta, self.cmssw_base)
 
         self.out.fillBranch('D_Top', D_Top)
         
