@@ -53,71 +53,71 @@ def compute_weights(GenPart_eta, GenPart_pt, GenPart_mass, GenPart_phi, pos_moth
     if (particles[p]==11 and particles[pos_mother[p]]==-24 and particles[pos_mother[pos_mother[p]]]!=15):
         pos_wm = pos_mother[p]
         number_elec = number_elec + 1
-        vector_lm.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlm.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lm.E())
+        vector_lm.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlm.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lm.E())
     
     elif (particles[p]==-11 and particles[pos_mother[p]]==24 and particles[pos_mother[pos_mother[p]]]!=-15):
         pos_wp = pos_mother[p]
         number_elec = number_elec + 1
-        vector_lp.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlp.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lp.E())
+        vector_lp.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlp.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lp.E())
     
     elif (particles[p]==13 and particles[pos_mother[p]]==-24 and particles[pos_mother[pos_mother[p]]]!=15):
         pos_wm = pos_mother[p]
         number_muon = number_muon + 1
-        vector_lm.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlm.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lm.E())
+        vector_lm.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlm.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lm.E())
     
     elif (particles[p]==-13 and particles[pos_mother[p]]==24 and particles[pos_mother[pos_mother[p]]]!=-15):
         pos_wp = pos_mother[p]
         number_muon = number_muon + 1
-        vector_lp.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlp.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lp.E())
+        vector_lp.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlp.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lp.E())
         
     elif (particles[p]==15 and particles[pos_mother[p]]==-24):
         pos_wm = pos_mother[p]
         number_tau = number_tau + 1
-        vector_lm.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlm.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lm.E())
+        vector_lm.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlm.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lm.E())
     
     elif (particles[p]==-15 and particles[pos_mother[p]]==24):
         pos_wp = pos_mother[p]
         number_tau = number_tau + 1
-        vector_lp.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        genlp.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lp.E())
+        vector_lp.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        genlp.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_lp.E())
          
     
     
     if (particles[p]==-12 and particles[pos_mother[p]]==-24 and particles[pos_mother[pos_mother[p]]]!=15):
-        vector_num.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennum.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_num.E())
+        vector_num.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennum.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_num.E())
     
     elif (particles[p]==12 and particles[pos_mother[p]]==24 and particles[pos_mother[pos_mother[p]]]!=-15):
-        vector_nup.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennup.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_nup.E())
+        vector_nup.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennup.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_nup.E())
     
     elif (particles[p]==-14 and particles[pos_mother[p]]==-24 and particles[pos_mother[pos_mother[p]]]!=15):
-        vector_num.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennum.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_num.E())
+        vector_num.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennum.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_num.E())
     
     elif (particles[p]==14 and particles[pos_mother[p]]==24 and particles[pos_mother[pos_mother[p]]]!=-15):
-        vector_nup.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennup.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_nup.E())
+        vector_nup.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennup.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_nup.E())
         
     elif (particles[p]==-16 and particles[pos_mother[p]]==-24):
-        vector_num.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennum.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_num.E())
+        vector_num.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennum.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_num.E())
     
     elif (particles[p]==16 and particles[pos_mother[p]]==24):
-        vector_nup.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-        gennup.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_nup.E())
+        vector_nup.SetPtEtaPhiM(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], 0.0)
+        gennup.SetCoordinates(GenPart_pt[p], GenPart_eta[p], GenPart_phi[p], vector_nup.E())
 
-  vector_Wp.SetPtEtaPhiM(GenPart_pt.values[pos_wp], GenPart_eta.values[pos_wp], GenPart_phi.values[pos_wp], GenPart_mass.values[pos_wp]) # W plus
-  genWp.SetCoordinates(GenPart_pt.values[pos_wp], GenPart_eta.values[pos_wp], GenPart_phi.values[pos_wp], vector_Wp.E())
+  vector_Wp.SetPtEtaPhiM(GenPart_pt[pos_wp], GenPart_eta[pos_wp], GenPart_phi[pos_wp], GenPart_mass.values[pos_wp]) # W plus
+  genWp.SetCoordinates(GenPart_pt[pos_wp], GenPart_eta[pos_wp], GenPart_phi[pos_wp], vector_Wp.E())
       
   
-  vector_Wm.SetPtEtaPhiM(GenPart_pt.values[pos_wm], GenPart_eta.values[pos_wm], GenPart_phi.values[pos_wm], GenPart_mass.values[pos_wm]) # W minus
-  genWm.SetCoordinates(GenPart_pt.values[pos_wm], GenPart_eta.values[pos_wm], GenPart_phi.values[pos_wm], vector_Wm.E())
+  vector_Wm.SetPtEtaPhiM(GenPart_pt[pos_wm], GenPart_eta[pos_wm], GenPart_phi[pos_wm], GenPart_mass[pos_wm]) # W minus
+  genWm.SetCoordinates(GenPart_pt[pos_wm], GenPart_eta[pos_wm], GenPart_phi[pos_wm], vector_Wm.E())
          
     
   if (((number_elec==0 or number_muon==0) and number_tau==0) or pos_wp==999 or pos_wm==999):
