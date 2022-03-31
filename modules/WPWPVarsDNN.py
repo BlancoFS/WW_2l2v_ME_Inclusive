@@ -45,6 +45,7 @@ class WPWPVarsDNN(Module):
         self.out.branch('Weight_TL','F')
         self.out.branch('Weight_LT','F')
         self.out.branch('Weight_TT','F')
+        self.out.branch('Weight_Bkg', 'F')
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -247,6 +248,7 @@ class WPWPVarsDNN(Module):
         self.out.fillBranch('Weight_TL', PolWeight_TL)
         self.out.fillBranch('Weight_LT', PolWeight_LT)
         self.out.fillBranch('Weight_TT', PolWeight_TT)
+        self.out.fillBranch('Weight_Bkg', PolWeight_TT+PolWeight_LT+PolWeight_TL)
         
 
         return True
