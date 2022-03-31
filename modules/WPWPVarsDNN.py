@@ -27,7 +27,7 @@ class WPWPVarsDNN(Module):
 
         self.out = wrappedOutputTree        
         self.out.branch('metpt','F')
-        self.out.branch('metsphi','F')
+        self.out.branch('metphi','F')
         self.out.branch('lep1pt','F')
         self.out.branch('lep2pt','F')
         self.out.branch('lep1eta','F')
@@ -54,6 +54,11 @@ class WPWPVarsDNN(Module):
         
         GenPart = Collection(event, 'GenPart')
         nParticles = GenPart._len
+        
+        PolWeight_LL = 0.0
+        PolWeight_TL = 0.0
+        PolWeight_LT = 0.0
+        PolWeight_TT = 0.0
 
         Wp = ROOT.Math.PtEtaPhiEVector()
         Wm = ROOT.Math.PtEtaPhiEVector()
@@ -75,47 +80,173 @@ class WPWPVarsDNN(Module):
         number_muon = 0
         number_tau  = 0
         
-        for iPart in range(nParticles):
+        for p in range(nParticles):
           
-          if (particles[p]==11 and particles[pos_mother[p]]==-24):
-            pos_wm = pos_mother[p]
-            number_elec = number_elec + 1
-            vector_lm.SetPtEtaPhiM(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], 0.0)
-            genlm.SetCoordinates(GenPart_pt.values[p], GenPart_eta.values[p], GenPart_phi.values[p], vector_lm.E())
+          if (GenPart[p].pdgId==11 and GenPart[GenPart[p].genPartIdxMother].pdgId==-24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==15):
+              pos_wm = GenPart[p].genPartIdxMother
+              number_elec = number_elec + 1
+              vector_lm.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlm.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lm.E())
           
+          elif (GenPart[p].pdgId==-11 and GenPart[GenPart[p].genPartIdxMother].pdgId==24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==-15):
+              pos_wp = GenPart[p].genPartIdxMother
+              number_elec = number_elec + 1
+              vector_lp.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlp.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lp.E())
           
+          elif (GenPart[p].pdgId==13 and GenPart[GenPart[p].genPartIdxMother].pdgId==-24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==15):
+              pos_wm = GenPart[p].genPartIdxMother
+              number_muon = number_muon + 1
+              vector_lm.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlm.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lm.E())
           
-          
-    
-    
-    
-            if (CleanJets[iJet].pt > 20. and ROOT.TMath.Abs(CleanJets[iJet].eta) < 2.5 and Jets[CleanJets[iJet].jetIdx].btagDeepB > self.bVetoCut):
-                nbtagged += 1
-            else:
-                continue
+          elif (GenPart[p].pdgId==-13 and GenPart[GenPart[p].genPartIdxMother].pdgId==24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==-15):
+              pos_wp = GenPart[p].genPartIdxMother
+              number_muon = number_muon + 1
+              vector_lp.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlp.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lp.E())
                 
-        if 'TTTo2L2Nu' in str(self.inputFile):
-            MCweight = (event.topGenPt * event.antitopGenPt > 0.) * (ROOT.TMath.Sqrt(ROOT.TMath.Exp(-0.158631 + 2.00214e-04*event.topGenPt - 3.09496e-07*event.topGenPt*event.topGenPt + 34.93/(event.topGenPt+135.633)) * ROOT.TMath.Exp(-0.158631 + 2.00214e-04*event.antitopGenPt - 3.09496e-07*event.antitopGenPt*event.antitopGenPt + 34.93/(event.antitopGenPt+135.633)))) + (event.topGenPt * event.antitopGenPt <= 0.)
-        elif '_WWTo2L2Nu_' in str(self.inputFile):
-            MCweight = event.nllW
-        elif '_M-50' in str(self.inputFile): #DY high mass
-            MCweight = (0.876979+event.gen_ptll*(4.11598e-03)-(2.35520e-05)*event.gen_ptll*event.gen_ptll)*(1.10211 * (0.958512 - 0.131835*ROOT.TMath.Erf((event.gen_ptll-14.1972)/10.1525)))*(event.gen_ptll<140)+0.891188*(event.gen_ptll>=140)
-        elif '_M-10to50' in str(self.inputFile): #DY low mass
-            MCweight = (8.61313e-01+event.gen_ptll*4.46807e-03-1.52324e-05*event.gen_ptll*event.gen_ptll)*(1.08683 * (0.95 - 0.0657370*ROOT.TMath.Erf((event.gen_ptll-11.)/5.51582)))*(event.gen_ptll<140)+1.141996*(event.gen_ptll>=140)
-        elif '50_HT' in str(self.inputFile): #DY low mass
-            MCweight = (8.61313e-01+event.gen_ptll*4.46807e-03-1.52324e-05*event.gen_ptll*event.gen_ptll)*(1.08683 * (0.95 - 0.0657370*ROOT.TMath.Erf((event.gen_ptll-11.)/5.51582)))*(event.gen_ptll<140)+1.141996*(event.gen_ptll>=140)
-        elif (('GluGluWWTo2' in str(self.inputFile)) or ('GluGluToWW' in str(self.inputFile))):
-            MCweight = 1.53/1.4
-        elif (('ZZTo2L2Nu' in str(self.inputFile)) or ('ZZTo2L2Q' in str(self.inputFile)) or ('ZZTo4L' in str(self.inputFile)) or ('WZTo2L2Q' in str(self.inputFile))):
-            MCweight = 1.11
+          elif (GenPart[p].pdgId==15 and GenPart[GenPart[p].genPartIdxMother].pdgId==-24):
+              pos_wm = GenPart[p].genPartIdxMother
+              number_tau = number_tau + 1
+              vector_lm.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlm.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lm.E())
+          
+          elif (GenPart[p].pdgId==-15 and GenPart[GenPart[p].genPartIdxMother].pdgId==24):
+              pos_wp = GenPart[p].genPartIdxMother
+              number_tau = number_tau + 1
+              vector_lp.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              genlp.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_lp.E())
+          
+          
+          if (GenPart[p].pdgId==-12 nd GenPart[GenPart[p].genPartIdxMother].pdgId==-24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==15):
+              vector_num.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennum.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_num.E())
+          
+          elif (GenPart[p].pdgId==12 and GenPart[GenPart[p].genPartIdxMother].pdgId==24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==-15):
+              vector_nup.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennup.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_nup.E())
+          
+          elif (GenPart[p].pdgId==-14 and GenPart[GenPart[p].genPartIdxMother].pdgId==-24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==15):
+              vector_num.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennum.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_num.E())
+          
+          elif (GenPart[p].pdgId==14 and GenPart[GenPart[p].genPartIdxMother].pdgId==24 and GenPart[GenPart[GenPart[p].genPartIdxMother].genPartIdxMother].pdgId==-15):
+              vector_nup.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennup.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_nup.E())
+                
+          elif (GenPart[p].pdgId==-16 and GenPart[GenPart[p].genPartIdxMother].pdgId==-24):
+              vector_num.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennum.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_num.E())
+          
+          elif (GenPart[p].pdgId==16 and GenPart[GenPart[p].genPartIdxMother].pdgId==24):
+              vector_nup.SetPtEtaPhiM(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, 0.0)
+              gennup.SetCoordinates(GenPart[p].pt, GenPart[p].eta, GenPart[p].phi, vector_nup.E())
+          
+          
+        vector_Wp.SetPtEtaPhiM(GenPart[pos_wp].pt, GenPart[pos_wp].eta, GenPart[pos_wp].phi, GenPart[pos_wp].mass) # W plus
+        genWp.SetCoordinates(GenPart[pos_wp].pt, GenPart[pos_wp].eta, GenPart[pos_wp].phi, vector_Wp.E())
+            
+        
+        vector_Wm.SetPtEtaPhiM(GenPart[pos_wm].pt, GenPart[pos_wm].eta, GenPart[pos_wm].phi, GenPart[pos_wm].mass) # W minus
+        genWm.SetCoordinates(GenPart[pos_wm].pt, GenPart[pos_wm].eta, GenPart[pos_wm].phi, vector_Wm.E())
+          
+        if (((number_elec==0 or number_muon==0) and number_tau==0) or pos_wp==999 or pos_wm==999):
+            PolWeight_LL = 1.0
+            PolWeight_TL = 1.0
+            PolWeight_LT = 1.0
+            PolWeight_TT = 1.0
         else:
-            MCweight = 1.0
+            wmRF = ROOT.Math.XYZVector()
+            wpRF = ROOT.Math.XYZVector()
+            
+            wmRF = genWm.BoostToCM()
+            wpRF = genWp.BoostToCM()
+            
+            leppWRF = ROOT.Math.XYZVector()
+            lepmWRF = ROOT.Math.XYZVector()
+            leppWRF = ROOT.Math.VectorUtil.boost(genlp, wpRF)
+            lepmWRF = ROOT.Math.VectorUtil.boost(genlm, wmRF)
+            
+            theta_Wp_star = ROOT.Math.VectorUtil.Angle(leppWRF, genWp)
+            theta_Wm_star = ROOT.Math.VectorUtil.Angle(lepmWRF, genWm)
+            
+            cos_Wp_theta_star = np.cos(theta_Wp_star)
+            cos_Wm_theta_star = np.cos(theta_Wm_star)
+            
+            ###################################
+            # Theoretical polarized fractions #
+            ###################################
+            
+            # https://arxiv.org/pdf/2006.14867.pdf
+            # https://arxiv.org/pdf/1204.6427.pdf
+            
+            #f0_m = 0.26
+            #fL_m = 0.48
+            #fR_m = 0.25
+            #fT_m = fL_m + fR_m
+            
+            f0_p = 0.271
+            fT_p = 0.729
+            fL_p = fT_p/1.52
+            fR_p = fT_p - fL_p
+            
+            f0_m = 0.271
+            fT_m = 0.729
+            fL_m = fT_m/1.52
+            fR_m = fT_m - fL_m
+            
+            # Compute single polarizations weights as a function of cos(theta_star)
+            # Then, calculate doubly-polarized fractions
+            
+            # W minus
+            
+            weight_f0_Wm = (3/4) * f0_m * (1 - cos_Wm_theta_star*cos_Wm_theta_star)
+            weight_fL_Wm = (3/8) * fL_m * (1 + cos_Wm_theta_star)*(1 + cos_Wm_theta_star)
+            weight_fR_Wm = (3/8) * fR_m * (1 - cos_Wm_theta_star)*(1 - cos_Wm_theta_star)
+            weight_fT_Wm = (3/8) * fL_m * (1 + cos_Wm_theta_star)*(1 + cos_Wm_theta_star) + (3/8) * fR_m * (1 - cos_Wm_theta_star)*(1 - cos_Wm_theta_star)
+            weight_total_Wm = weight_f0_Wm + weight_fL_Wm + weight_fR_Wm
+            
+            # W plus
+            
+            weight_f0_Wp = (3/4) * f0_p * (1 - cos_Wp_theta_star*cos_Wp_theta_star)
+            weight_fL_Wp = (3/8) * fL_p * (1 - cos_Wp_theta_star)*(1 - cos_Wp_theta_star)
+            weight_fR_Wp = (3/8) * fR_p * (1 + cos_Wp_theta_star)*(1 + cos_Wp_theta_star)
+            weight_fT_Wp = (3/8) * fL_p * (1 - cos_Wp_theta_star)*(1 - cos_Wp_theta_star) + (3/8) * fR_p * (1 + cos_Wp_theta_star)*(1 + cos_Wp_theta_star)
+            weight_total_Wp = weight_f0_Wp + weight_fL_Wp + weight_fR_Wp
+            
+            # Doubly Polarized
+            
+            PolWeight_LL = (weight_f0_Wp/weight_total_Wp)*(weight_f0_Wm/weight_total_Wm)
+            PolWeight_TL = (weight_fT_Wp/weight_total_Wp)*(weight_f0_Wm/weight_total_Wm)
+            PolWeight_LT = (weight_f0_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm)
+            PolWeight_TT = (weight_fT_Wp/weight_total_Wp)*(weight_fT_Wm/weight_total_Wm)
+            
+        theta_ll = ROOT.Math.VectorUtil.Angle(genlp, genlm)
 
-        self.out.fillBranch('nbtaggedJets',nbtagged)
-        self.out.fillBranch('metpt',eval(self.metpt))
-        self.out.fillBranch('metsig',eval(self.metsig))
-        self.out.fillBranch('lep1pt',eval(self.lep1pt))
-        self.out.fillBranch('lep2pt',eval(self.lep2pt))
-        self.out.fillBranch('specialMCWeigths',MCweight)
+        costhetall = ROOT.Math.cos(theta_ll)
+        
+        ### Fill Branch    
+        
+        self.out.fillBranch('metpt', self.metpt)
+        self.out.fillBranch('metphi', self.metphi)
+        self.out.fillBranch('lep1pt', self.lep1pt)
+        self.out.fillBranch('lep2pt', self.lep2pt)
+        self.out.fillBranch('lep1eta', self.lep1eta)
+        self.out.fillBranch('lep2eta', self.lep2eta)
+        self.out.fillBranch('lep1phi', self.lep1phi)
+        self.out.fillBranch('lep2phi', self.lep2phi)
+        self.out.fillBranch('mll', event.mll)
+        self.out.fillBranch('mth', event.mth)
+        self.out.fillBranch('dphill', event.dphill)
+        self.out.fillBranch('costheta', costhetall)
+        self.out.fillBranch('mww', event.Mww)
+        self.out.fillBranch('ptll', event.ptll)
+        self.out.fillBranch('drll', event.drll)
+        self.out.fillBranch('Weight_LL', PolWeight_LL)
+        self.out.fillBranch('Weight_TL', PolWeight_TL)
+        self.out.fillBranch('Weight_LT', PolWeight_LT)
+        self.out.fillBranch('Weight_TT', PolWeight_TT)
+        
 
         return True
