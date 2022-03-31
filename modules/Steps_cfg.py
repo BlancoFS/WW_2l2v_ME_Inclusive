@@ -8,7 +8,7 @@ from pprint import pprint
 steps = {
 
 'WPWPVarsDNN' : { 
-                  'isChain'  : False ,
+                  'isChain'  : True ,
                   'do4MC'    : True  ,
                   'do4Data'  : True ,
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/WPWPVarsDNN_branches.txt',
@@ -19,9 +19,3 @@ steps = {
                },
 
 }
-
-
-
-
-
-
